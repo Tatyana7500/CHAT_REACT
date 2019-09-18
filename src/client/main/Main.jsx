@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import './styles.css';
+import MainHeader from './mainHeader';
+import ContentWindow from './contentWindow';
 
-export default class Main extends Component {
+class Main extends Component {
     render() {
         return (
-            <h1>Здесь скоро будет чат)</h1>
+           <div className='main'>
+                <MainHeader />
+                <ContentWindow />
+           </div>
         );
     }
 }
+
+export default Main;

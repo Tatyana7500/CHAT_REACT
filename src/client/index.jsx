@@ -8,10 +8,10 @@ import SignIn from './signIn/SignIn.jsx';
 ReactDOM.render(
     <Router>
         <Switch>
-            <Route exact path="/" component={Main} />
-            <Route path="/login" component={Login} />
-            <Route path="/signIn" component={SignIn} />
+            <Route exact path='/main' component={Main} />
+            <Route exact path='/login' component={Login} />
+            <Route exact path='/signIn' component={SignIn} />
         </Switch>
     </Router>,
-    document.getElementById("root")
+    document.getElementById('root')
 );
