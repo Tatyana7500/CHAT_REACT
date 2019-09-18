@@ -1,9 +1,10 @@
 module.exports = {
     REDIS: 'redis',
     MYSQL: 'mysql',
-    MESSAGE:'message',
-    CONNECTION:'connection',
+    MONGO: 'mongo',
     ONLINE: 'online',
     OFFLINE: 'offline',
+    MESSAGE:'message',
+    CONNECTION:'connection',
     DISCONNECT: 'disconnect'
 };

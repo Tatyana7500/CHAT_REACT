@@ -1,5 +1,5 @@
 const DAO = require('./dao');
-const config = require('../../server/config');
+const config = require('../../config');
 
 function UsersDaoRedisDB() {
     this.connection = null;

@@ -1,9 +1,9 @@
-const constants = require('.././server/constants');
+const constants = require('../constants');
 const UsersDaoRedisDB = require('./dao/usersDaoRedis');
 const MessagesDaoRedisDB = require('./dao/messagesDaoRedis');
 const UsersDaoMySqlDB = require('./dao/usersDaoMySql');
 const MessagesDaoMySqlDB = require('./dao/messagesDaoMySql');
-const config = require('../server/config');
+const config = require('../config');
 
 function ChatDAL() {
     this.messagesDAO = null;
@@ -20,6 +20,7 @@ ChatDAL.prototype.initialize = function () {
 
 ChatDAL.prototype.createMessagesDAO = function() {
     switch (config.databaseType) {
+        case constants.MONGO:
         case constants.REDIS:
             return new MessagesDaoRedisDB();
         case constants.MYSQL:
@@ -31,6 +32,7 @@ ChatDAL.prototype.createMessagesDAO = function() {
 
 ChatDAL.prototype.createUsersDAO = function() {
     switch (config.databaseType) {
+        case constants.MONGO:
         case constants.REDIS:
             return new UsersDaoRedisDB();
         case constants.MYSQL:

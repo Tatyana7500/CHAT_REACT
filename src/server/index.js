@@ -2,7 +2,7 @@ const socket = require('socket.io');
 const express = require('express');
 const bodyParser = require("body-parser");
 const constants = require('./constants');
-const ChatDAL = require('../dal/chatDAL');
+const ChatDAL = require('./dal/chatDAL');
 const jsonParser = bodyParser.json();
 
 const app = express();
