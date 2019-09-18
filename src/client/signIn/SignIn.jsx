@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class Signin extends Component{
+export default class SignIn extends Component{
     render(){
         return (
             <h2>Страница для регистрации</h2>
