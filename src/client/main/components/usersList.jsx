@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 class UsersList extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <div className='content'>
@@ -8,18 +12,15 @@ class UsersList extends Component {
                     <div className='users__info'>name</div>
                     <div className='users__info'>e-mail</div>
                 </div>
-                <div className='users__card'>
-                    <p className='users__info'>Nikita</p>
-                    <p className='users__info'>Nikita@gmail.com</p>
-                </div>
-                <div className='users__card'>
-                    <p className='users__info'>Nikita</p>
-                    <p className='users__info'>Nikita@gmail.com</p>
-                </div>
-                <div className='users__card'>
-                     <p className='users__info'>Nikita</p>
-                    <p className='users__info'>Nikita@gmail.com</p>
-                </div>
+                {this.props.usersList.map((item, index) => {
+                    return (
+                        <div className='users__card' key={index}>
+                            <p className='users__info'>{item.name}</p>
+                            <p className='users__info'>{item.email}</p>
+                        </div>
+                    );
+                })
+                }
             </div>
         );
     }

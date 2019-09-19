@@ -18,6 +18,7 @@ UsersDaoMongoDB.prototype.constructor = UsersDaoMongoDB;
 
 UsersDaoMongoDB.prototype.initialize = function () {
     if (this.connection) {
+       
         return;
     }
 
@@ -27,6 +28,7 @@ UsersDaoMongoDB.prototype.initialize = function () {
         .then(connection => {
             this.connection = connection;
             this.model = connection.model('user', userSchema);
+           
         })
         .catch((error) => {
             console.error(error);
@@ -43,6 +45,7 @@ UsersDaoMongoDB.prototype.readAll = async function() {
 };
 
 UsersDaoMongoDB.prototype.readUser = async function(email, password) {
+    
     return await this.model.findOne({ email, password });
 };
 

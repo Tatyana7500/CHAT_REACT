@@ -5,38 +5,21 @@ import ChatWindow from './chatWindow';
 class ContentWindow extends Component {
     constructor(props) {
         super(props);
-        this.clickButtonUser = this.clickButtonUser.bind(this);
-        this.clickButtonChat = this.clickButtonChat.bind(this);
-        this.state = {
-            clickUser: false,
-            clickChat: false,
-        };
-    }
-
-    clickButtonUser() {
-        this.setState({
-            clickUser: true,
-            clickChat: false,
-        });
-    }
-    clickButtonChat() {
-        this.setState({
-            clickUser: false,
-            clickChat: true,
-        });
     }
 
     render() {
         return (
-            <div className='mainWindow'>
+            
+            <div className='mainWindow'>{console.log(this.props.List)}
                 <div className='wrapper mainWindow__wrapper'>
                     <div className='buttons-main'>
-                        <button onClick={this.clickButtonUser} className='btn buttons-main__btn buttons-main__btn_user' id='getUsers'>users</button>
-                        <button onClick={this.clickButtonChat} className='btn buttons-main__btn buttons-main__btn_chat' id='getChat'>chat</button>
+                        <button onClick={this.props.clickUsers} className='btn buttons-main__btn buttons-main__btn_user' id='getUsers'>users</button>
+                        <button onClick={this.props.clickChat} className='btn buttons-main__btn buttons-main__btn_chat' id='getChat'>chat</button>
                     </div>
                 </div>
-                {this.state.clickUser && <UsersList />}
-                {this.state.clickChat && <ChatWindow />}
+                
+                {this.props.users && <UsersList usersList={this.props.List} />}
+                {this.props.chat && <ChatWindow  messagesLst = {this.props.mesList}/>}
             </div>
         );
     }

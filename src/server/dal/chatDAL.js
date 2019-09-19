@@ -1,6 +1,8 @@
 const constants = require('../constants');
 const UsersDaoRedisDB = require('./dao/usersDaoRedis');
 const MessagesDaoRedisDB = require('./dao/messagesDaoRedis');
+const UsersDaoMongoDB = require('./dao/usersDaoMongoDB');
+const MessagesDaoMongoDB = require('./dao/messagesDaoMongoDB');
 const UsersDaoMySqlDB = require('./dao/usersDaoMySql');
 const MessagesDaoMySqlDB = require('./dao/messagesDaoMySql');
 const config = require('../config');
@@ -11,28 +13,30 @@ function ChatDAL() {
 }
 
 ChatDAL.prototype.initialize = function () {
-    this.messagesDAO = this.createMessagesDAO();
-    this.messagesDAO.initialize();
+     this.messagesDAO = this.createMessagesDAO();
+     this.messagesDAO.initialize();
 
     this.usersDAO = this.createUsersDAO();
     this.usersDAO.initialize();
 };
 
-ChatDAL.prototype.createMessagesDAO = function() {
+ChatDAL.prototype.createMessagesDAO = function () {
     switch (config.databaseType) {
         case constants.MONGO:
+            return new MessagesDaoMongoDB();
         case constants.REDIS:
             return new MessagesDaoRedisDB();
         case constants.MYSQL:
-            return new MessagesDaoMySqlDB();
+            //return new MessagesDaoMySqlDB();
         default:
             throw new Error('unknown databaseType');
     }
 };
 
-ChatDAL.prototype.createUsersDAO = function() {
+ChatDAL.prototype.createUsersDAO = function () {
     switch (config.databaseType) {
         case constants.MONGO:
+            return new UsersDaoMongoDB();
         case constants.REDIS:
             return new UsersDaoRedisDB();
         case constants.MYSQL:
@@ -43,7 +47,8 @@ ChatDAL.prototype.createUsersDAO = function() {
 };
 
 ChatDAL.prototype.readPublicMessages = async function () {
-    return await this.messagesDAO.readByReceiver("ALL");
+   
+    return await this.messagesDAO.readByReceiver("ALL"); //TODO:вынести в конст
 };
 
 ChatDAL.prototype.readPrivateMessages = async function (sender, receiver) {
@@ -67,6 +72,7 @@ ChatDAL.prototype.read = async function (user) {
 };
 
 ChatDAL.prototype.readUser = async function (email, password) {
+    
     return await this.usersDAO.readUser(email, password);
 };
 
@@ -79,7 +85,7 @@ ChatDAL.prototype.mergeMessageAndUser = function (messages, users) {
 
     for (let i = 0; i < messages.length; i++) {
         for (let j = 0; j < users.length; j++) {
-            if(users[j]._id == messages[i].sender) {
+            if (users[j]._id == messages[i].sender) {
                 const message = {
                     message: messages[i].message,
                     date: messages[i].date,

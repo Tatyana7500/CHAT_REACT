@@ -3,10 +3,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const constants = require('./constants');
 const ChatDAL = require('./dal/chatDAL');
+const cors = require('cors');
 const jsonParser = bodyParser.json();
 
 const app = express();
+app.use(cors());
 app.use(express.static('dist'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 const server = app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
@@ -73,15 +76,15 @@ app.post('/message', jsonParser, async (request, res) => {
     res.status(200).send('OK');
 });
 
-app.post('/auth', jsonParser, async (request, res) => {
+app.post('/auth', bodyParser.urlencoded({ extended: false }), async (request, res) => {
     try {
-        const { email, password } = request.body;
-        const user = await chatDal.readUser(email, password);
+        const { emailInput, passwordInput } = request.body;
+        const user = await chatDal.readUser(emailInput, passwordInput);
         res.status(200).send(user);
     } catch (e) {
         res.status(403).send(e.message);
     }
-});
+})
 
 app.post('/signin', jsonParser, async (request, res) => {
     try {
@@ -94,20 +97,21 @@ app.post('/signin', jsonParser, async (request, res) => {
 
 app.get('/users', async (request, res) => {
     const users = await chatDal.readAllUsers();
-
     res.status(200).send(users);
 });
 
 app.get('/messages', async (request, res) => {
+    
     const { sender, receiver, chat } = request.query;
     let users = await chatDal.readAllUsers();
     let messages = [];
 
     if (chat === 'PUBLIC') {
         messages = await chatDal.readPublicMessages();
-    } else if (chat === "PRIVATE") {
+    } else if (chat === 'PRIVATE') {
         messages = await chatDal.readPrivateMessages(sender, receiver);
     }
 
     res.status(200).send(chatDal.mergeMessageAndUser(messages, users));
 });
+

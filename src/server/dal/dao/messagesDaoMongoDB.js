@@ -40,6 +40,7 @@ MessagesDaoMongoDB.prototype.create = async function (object) {
 };
 
 MessagesDaoMongoDB.prototype.readByReceiver = async function(receiver) {
+    
     return await this.model.find({ receiver });
 };
 

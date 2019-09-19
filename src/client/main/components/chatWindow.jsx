@@ -4,7 +4,6 @@ import ChatCloud from './chatCloud';
 class ChatWindow extends Component {
     constructor(props) {
         super(props);
-
         this.updateMessageValue = this.updateMessageValue.bind(this);
         this.clickButtonSend = this.clickButtonSend.bind(this);
         this.state = {
@@ -28,12 +27,12 @@ class ChatWindow extends Component {
         return (
             <div className='content'>
                 <div className='massageField' id='massageField'>
-                    {this.state.sendMessage.map((text, index) => {
+                     {this.props.messageLst.map((item, index) => {
                         return (
-                            <ChatCloud key={index} text={text} />
+                            <ChatCloud key={index} name={item.name} text={item.message}/>
                         );
                     })
-                    }
+                    } 
                 </div>
                 <div className='footer'>
                     <textarea name='' id='textMassage' className='textMassage' placeholder='Your massage' value={this.state.messageAreaValue} onChange={this.updateMessageValue}> </textarea>
