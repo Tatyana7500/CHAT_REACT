@@ -1,0 +1,31 @@
+const sendPost = async (url, data) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const user = await response.json();
+    return await user;
+};
+
+const sendGet = async (url) => {
+    const response = await fetch(url);
+    const data = await response.json();
+    return await data;
+};
+
+const setToLocalStorage = (data) => {
+    if (data) {
+        localStorage.setItem('chat', JSON.stringify(data));
+        window.location.href = '/main';
+    }
+};
+
+module.exports = {
+    sendGetRequest: sendGet,
+    sendPostRequest: sendPost,
+    setToLocalStorage: setToLocalStorage,
+};

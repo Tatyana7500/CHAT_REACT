@@ -4,7 +4,12 @@ module.exports = {
     MONGO: 'mongo',
     ONLINE: 'online',
     OFFLINE: 'offline',
-    MESSAGE:'message',
-    CONNECTION:'connection',
-    DISCONNECT: 'disconnect'
+    MESSAGE: 'message',
+    CONNECTION: 'connection',
+    DISCONNECT: 'disconnect',
+    LOCALHOST: 'http://localhost:8080',
+    ALL: 'ALL',
+    PUBLIC: 'PUBLIC',
+    CHAT: 'chat',
+    USERS: 'users',
 };

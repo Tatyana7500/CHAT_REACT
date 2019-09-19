@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UsersList from './usersList';
 import ChatWindow from './chatWindow';
+import constants from '../../../server/constants';
 
 class ContentWindow extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class ContentWindow extends Component {
     render() {
         return (
             
-            <div className='mainWindow'>{console.log(this.props.List)}
+            <div className='mainWindow'>
                 <div className='wrapper mainWindow__wrapper'>
                     <div className='buttons-main'>
                         <button onClick={this.props.clickUsers} className='btn buttons-main__btn buttons-main__btn_user' id='getUsers'>users</button>
@@ -18,8 +19,8 @@ class ContentWindow extends Component {
                     </div>
                 </div>
                 
-                {this.props.users && <UsersList usersList={this.props.List} />}
-                {this.props.chat && <ChatWindow  messagesLst = {this.props.mesList}/>}
+                {this.props.users === constants.USERS && <UsersList usersList={this.props.List} />}
+                {this.props.users === constants.MESSAGE && <ChatWindow  messages = {this.props.messages}/>}
             </div>
         );
     }

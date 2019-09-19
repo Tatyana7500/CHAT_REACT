@@ -1,48 +1,47 @@
 import React, { Component } from 'react';
 import MainHeader from './components/mainHeader';
 import ContentWindow from './components/contentWindow';
-import { callbackify } from 'util';
+import constants from '../../server/constants';
+import util from '../../server/util.jsx'
 
 class Main extends Component {
     constructor(props) {
         super(props);
         this.getItemFromLocalStorage = this.getItemFromLocalStorage.bind(this);
-        this.clickButtonUser = this.clickButtonUser.bind(this);
-        this.clickButtonChat = this.clickButtonChat.bind(this);
-        this.sendGetRequest = this.sendGetRequest.bind(this);
+        this.clickButtonUser = this.clickButtonUser.bind(this)
+        this.clickButtonChat = this.clickButtonChat.bind(this)
+       //TODO: без bind
         this.state = {
             name: '',
             email: '',
-            clickChat: false,
-            clickUser: false,
+            mainWindowState: constants.USERS, //TODO: обьеденить в 1 поле
             usersList: [],
             messagesList: [],
             idUserSender: null,
-            idUserReceiver: 'ALL',
-            chat: 'PUBLIC',       //TODO: ALL and PUBLIC write CONSTANTS
+            idUserReceiver: constants.ALL,
+            chat: constants.PUBLIC,
         };
     }
 
-    clickButtonUser() {
-        this.setState({
-            clickUser: true,
-            clickChat: false,
-        }, () => this.sendGetRequest('http://localhost:8080/users', (data) => {
-            this.setState({
-                usersList: data,
-            });
-        }));
+   async clickButtonUser () {
+        await this.setState({
+            mainWindowState: constants.USERS,
+        });
+        const response = await util.sendGetRequest(`${constants.LOCALHOST}/users`);
+       await this.setState({
+            usersList: response,
+        });
     }
 
-    clickButtonChat() {
+    async clickButtonChat() {
         this.setState({
-            clickUser: false,
-            clickChat: true,
-        }, () => this.sendGetRequest(`http://localhost:8080/messages?chat=${this.state.chat}&sender=${this.state.idUserSender}&receiver=${this.state.idUserReceiver}`, (data) =>{
-            this.setState({
+           mainWindowState: constants.MESSAGE,
+        })
+       const data = await util.sendGetRequest(`http://localhost:8080/messages?chat=${this.state.chat}&sender=${this.state.idUserSender}&receiver=${this.state.idUserReceiver}`)
+            await this.setState({
                 messagesList: data,
             });
-        }));
+        
     }
 
     getItemFromLocalStorage() {
@@ -53,15 +52,7 @@ class Main extends Component {
             idUserSender: JSON.parse(userObj)._id,
         });
     }
-
-     async sendGetRequest(url, callback) {
-        const data = await fetch(url)
-            .then((res) => res.json());
-        if (data) {
-            callback(data);
-        }
-    }
-
+    
     componentDidMount() {
         this.getItemFromLocalStorage();
     }
@@ -69,8 +60,18 @@ class Main extends Component {
     render() {
         return (
             <div className='main'>
-                <MainHeader name={this.state.name} email={this.state.email} />
-                <ContentWindow clickChat={this.clickButtonChat} clickUsers={this.clickButtonUser} chat={this.state.clickChat} users={this.state.clickUser} List={this.state.usersList} mesList={this.state.messagesList} />
+                <MainHeader
+                    name={this.state.name}
+                    email={this.state.email}
+                />
+                <ContentWindow
+                    chat={this.state.clickChat}
+                    List={this.state.usersList}
+                    users={this.state.mainWindowState}
+                    messages={this.state.messagesList}
+                    clickChat={this.clickButtonChat}
+                    clickUsers={this.clickButtonUser}
+                />
             </div>
         );
     }

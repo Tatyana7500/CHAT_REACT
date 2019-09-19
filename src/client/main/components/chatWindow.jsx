@@ -27,9 +27,9 @@ class ChatWindow extends Component {
         return (
             <div className='content'>
                 <div className='massageField' id='massageField'>
-                     {this.props.messageLst.map((item, index) => {
+                     {this.props.messages.map((item, index) => {
                         return (
-                            <ChatCloud key={index} name={item.name} text={item.message}/>
+                            <ChatCloud key={index} name={item.name} text={item.message} email = {item.email}/>
                         );
                     })
                     } 
