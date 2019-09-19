@@ -27,16 +27,16 @@ MessagesDaoMySqlDB.prototype.initialize = function () {
     this.connection = mysql.createConnection(url).promise();
     this.connection.connect(function(err){
         if (err) {
-            return console.error("Ошибка: " + err.message);
+            return console.error('Ошибка: ' + err.message);
         }
         else{
-            console.log("Подключение к серверу MySQL успешно установлено");
+            console.log('Подключение к серверу MySQL успешно установлено');
         }
     });
 
     this.connection.query(messages, function(err, results) {
         if(err) console.log(err);
-        else console.log("Таблица создана");
+        else console.log('Таблица создана');
     });
 };
 
@@ -46,11 +46,9 @@ MessagesDaoMySqlDB.prototype.create = async function (obj) {
 
 MessagesDaoMySqlDB.prototype.readByReceiver = async function (receiver) {
     let messages;
-    console.log(receiver);
 
     await this.connection.query(`SELECT * FROM messages WHERE receiver = '${receiver}'`)
         .then(([rows]) => {
-            console.log(rows);
             messages = rows;
         });
 

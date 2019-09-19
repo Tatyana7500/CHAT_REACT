@@ -26,15 +26,15 @@ UsersDaoMySqlDB.prototype.initialize = function () {
     this.connection = mysql.createConnection(url).promise();
     this.connection.connect(function(err){
         if (err) {
-            return console.error("Ошибка: " + err.message);
+            return console.error('Ошибка: ' + err.message);
         } else {
-            console.log("Подключение к серверу MySQL успешно установлено");
+            console.log('Подключение к серверу MySQL успешно установлено');
         }
     });
 
     this.connection.query(users, function(err, results) {
         if(err) console.log(err);
-        else console.log("Таблица создана");
+        else console.log('Таблица создана');
     });
 };
 
