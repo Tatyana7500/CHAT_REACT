@@ -1,6 +1,6 @@
 const socket = require('socket.io');
 const express = require('express');
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 const constants = require('./constants');
 const ChatDAL = require('./dal/chatDAL');
 const jsonParser = bodyParser.json();
@@ -10,6 +10,7 @@ app.use(express.static('dist'));
 app.use(express.json());
 
 const server = app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
+
 const io = socket(server);
 
 const chatDal = new ChatDAL();
@@ -58,7 +59,7 @@ async function handleMessage(message) {
         const socketIds = clients.filter(item => item.id === id || item.id === receiver)
             .map(client => client.socketId);
 
-        for(let socketId of socketIds) {
+        for (let socketId of socketIds) {
             const socket = io.sockets.connected[socketId];
             socket && socket.emit(constants.MESSAGE, oneMessage);
         }
@@ -74,7 +75,7 @@ app.post('/message', jsonParser, async (request, res) => {
 
 app.post('/auth', jsonParser, async (request, res) => {
     try {
-        const {email, password} = request.body;
+        const { email, password } = request.body;
         const user = await chatDal.readUser(email, password);
         res.status(200).send(user);
     } catch (e) {
@@ -98,13 +99,13 @@ app.get('/users', async (request, res) => {
 });
 
 app.get('/messages', async (request, res) => {
-    const {sender, receiver, chat} = request.query;
-    let users = await  chatDal.readAllUsers();
+    const { sender, receiver, chat } = request.query;
+    let users = await chatDal.readAllUsers();
     let messages = [];
 
     if (chat === 'PUBLIC') {
         messages = await chatDal.readPublicMessages();
-    } else if (chat === "PRIVATE"){
+    } else if (chat === "PRIVATE") {
         messages = await chatDal.readPrivateMessages(sender, receiver);
     }
 

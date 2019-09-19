@@ -139,10 +139,14 @@ body {
     display: flex;
     flex-direction: column;
     width: 23%;
-    height: 50%;
+    height: 25%;
     justify-content: space-around;
     min-width: 460px;
     min-height: 390px;
+}
+
+.signin {
+   height: 40%;
 }
 
 .login-form{

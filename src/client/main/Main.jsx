@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import MainHeader from './mainHeader';
-import ContentWindow from './contentWindow';
+import MainHeader from './components/mainHeader';
+import ContentWindow from './components/contentWindow';
 
 class Main extends Component {
     render() {
