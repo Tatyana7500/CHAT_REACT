@@ -1,6 +1,12 @@
 const DAO = require('./dao');
 const config = require('../../config');
-const mysql = require('mysql');
+const mysql = require('mysql2');
+
+const users = `create table if not exists users(
+  _id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL)`;
 
 function UsersDaoMySqlDB() {
     this.connection = null;
@@ -17,32 +23,73 @@ UsersDaoMySqlDB.prototype.initialize = function () {
 
     const url = config.settings.mysql;
 
-    this.connection = mysql.createConnection(url);
-    this.connection.connect();
+    this.connection = mysql.createConnection(url).promise();
+    this.connection.connect(function(err){
+        if (err) {
+            return console.error('Ошибка: ' + err.message);
+        } else {
+            console.log('Подключение к серверу MySQL успешно установлено');
+        }
+    });
 
-    console.log("Connected!");
-
+    this.connection.query(users, function(err, results) {
+        if(err) console.log(err);
+        else console.log('Таблица создана');
+    });
 };
 
 UsersDaoMySqlDB.prototype.create = async function (obj) {
-    await this.model.query(`insert into users(name, email, password) values($1,$2,$3)` , [obj.name,obj.email,obj.password])
+    await this.connection.query(`INSERT INTO users(name, email, password) VALUES('${obj.name}', '${obj.email}', '${obj.password}')`);
 };
 
-UsersDaoMySqlDB.prototype.readUser = async function(email, password) {
-    return await this.model.query(`select * from users where email=$1 and password =$2` , [email , password])
-        .then((users)=>users.rows[0])
+UsersDaoMySqlDB.prototype.readUser = async function (email, password) {
+    let user = [];
+
+    await this.connection.execute(`SELECT * FROM users WHERE email='${email}' AND password='${password}'`)
+        .then(([rows]) => {
+            user = rows;
+        });
+
+    user = conversionUsers(user);
+
+    return user;
 };
 
 UsersDaoMySqlDB.prototype.readAll = async function () {
-    return await this.model.query('select * from users')
-        .then((users) => users.rows)
+    let users = [];
+
+    await this.connection.query('SELECT * FROM users')
+        .then(([rows]) => {
+            users = rows;
+        });
+
+    users = conversionUsers(users);
+
+    return users;
 };
 
-UsersDaoMySqlDB.prototype.readUserToId = async function(id) {
+UsersDaoMySqlDB.prototype.readUserToId = async function (id) {
     let user;
-    await this.model.query(`select * from users where _id = $1` , [id])
-        .then((r)=>{user = r.rows});
-    return user
+
+    await this.connection.query(`SELECT * FROM users WHERE _id = ${id}`)
+        .then(([rows]) => {
+            user = rows;
+        });
+
+    user = conversionUsers(users);
+
+    return user;
 };
+
+function conversionUsers(obj) {
+    let users = [];
+
+    for (let i = 0; i < obj.length; i++) {
+        const user = { _id: obj[i]._id, name: obj[i].name, email: obj[i].email, password: obj[i].password };
+        users.push(user);
+    }
+
+    return users;
+}
 
 module.exports = UsersDaoMySqlDB;

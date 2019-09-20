@@ -27,7 +27,7 @@ ChatDAL.prototype.createMessagesDAO = function () {
         case constants.REDIS:
             return new MessagesDaoRedisDB();
         case constants.MYSQL:
-            //return new MessagesDaoMySqlDB();
+            return new MessagesDaoMySqlDB();
         default:
             throw new Error('unknown databaseType');
     }
@@ -47,8 +47,7 @@ ChatDAL.prototype.createUsersDAO = function () {
 };
 
 ChatDAL.prototype.readPublicMessages = async function () {
-   
-    return await this.messagesDAO.readByReceiver("ALL"); //TODO:вынести в конст
+    return await this.messagesDAO.readByReceiver("ALL");
 };
 
 ChatDAL.prototype.readPrivateMessages = async function (sender, receiver) {
@@ -60,7 +59,7 @@ ChatDAL.prototype.createMessage = async function (message) {
 };
 
 ChatDAL.prototype.readAllUsers = async function () {
-    return await this.usersDAO.readAll()
+    return await this.usersDAO.readAll();
 };
 
 ChatDAL.prototype.createUser = async function (user) {
@@ -72,7 +71,6 @@ ChatDAL.prototype.read = async function (user) {
 };
 
 ChatDAL.prototype.readUser = async function (email, password) {
-    
     return await this.usersDAO.readUser(email, password);
 };
 
@@ -90,7 +88,7 @@ ChatDAL.prototype.mergeMessageAndUser = function (messages, users) {
                     message: messages[i].message,
                     date: messages[i].date,
                     name: users[j].name,
-                    email: users[j].email
+                    email: users[j].email,
                 };
 
                 chat.push(message);

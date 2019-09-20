@@ -13,7 +13,7 @@ const MainHeader = props => {
                     <span>E-mail:</span>
                     <span className='info__email'>{email}</span>
                 </div>
-                <a href='' className='btn btn-main logout' id='logOut'>log out</a>
+                <a href='/login' className='btn btn-main logout' id='logOut'>log out</a>
 
             </div>
         </div>

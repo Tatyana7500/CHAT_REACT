@@ -24,8 +24,18 @@ const setToLocalStorage = (data) => {
     }
 };
 
+const getLocalStorage = () => {
+    return JSON.parse(localStorage.getItem('chat'));
+};
+
+const goToLogin = () => {
+    window.location.href = '/login';
+};
+
 module.exports = {
     sendGetRequest: sendGet,
     sendPostRequest: sendPost,
     setToLocalStorage: setToLocalStorage,
+    getLocalStorage: getLocalStorage,
+    goToLogin: goToLogin,
 };

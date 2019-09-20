@@ -1,6 +1,13 @@
 const DAO = require('./dao');
 const config = require('../../config');
-const mysql = require('mysql');
+const mysql = require('mysql2');
+
+const messages = `create table if not exists messages(
+  _id INT PRIMARY KEY AUTO_INCREMENT,
+  message VARCHAR(255) NOT NULL,
+  sender VARCHAR(255) NOT NULL,
+  receiver VARCHAR(255) NOT NULL,
+  date VARCHAR(255) NOT NULL)`;
 
 function MessagesDaoMySqlDB() {
     this.connection = null;
@@ -17,35 +24,55 @@ MessagesDaoMySqlDB.prototype.initialize = function () {
 
     const url = config.settings.mysql;
 
-    this.connection = mysql.createConnection(url);
-    this.connection.connect();
+    this.connection = mysql.createConnection(url).promise();
+    this.connection.connect(function(err){
+        if (err) {
+            return console.error('Ошибка: ' + err.message);
+        } else {
+            console.log('Подключение к серверу MySQL успешно установлено');
+        }
+    });
 
-    console.log("Connected!");
+    this.connection.query(messages, function(err, results) {
+        if(err) console.log(err);
+        else console.log('Таблица создана');
+    });
 };
 
 MessagesDaoMySqlDB.prototype.create = async function (obj) {
-    await this.model.query(`insert into messages(message, sender , receiver , date) values($1,$2,$3,$4)`, [obj.message, obj.sender, obj.receiver , obj.date]);
+    await this.connection.query(`INSERT INTO messages(message, sender, receiver, date) VALUES('${obj.message}', '${obj.sender}', '${obj.receiver}', '${obj.date}')`);
 };
 
 MessagesDaoMySqlDB.prototype.readByReceiver = async function (receiver) {
     let messages;
-    await this.model.query("select * from messages where receiver = $1" ,[receiver])
-        .then((res) => messages = res.rows);
+
+    await this.connection.query(`SELECT * FROM messages WHERE receiver = '${receiver}'`)
+        .then(([rows]) => {
+            messages = rows;
+        });
+
+    messages = conversionMessages(messages);
 
     return messages;
 };
 
 MessagesDaoMySqlDB.prototype.readBySenderAndReceiver = async function (sender, receiver) {
-    let sent ;
+    let sent;
     let received;
-    await this.model.query("select * from messages where sender = $1 and receiver = $2", [sender, receiver])
-        .then((result) => {sent = result.rows});
 
-    await this.model.query("select * from messages where sender = $1 and receiver = $2", [receiver, sender])
-        .then((result) => { received= result.rows});
+    await this.connection.query(`SELECT * FROM messages WHERE sender = '${sender}' AND receiver = '${receiver}'`)
+        .then(([rows]) => {
+            sent = rows;
+        });
 
+    await this.connection.query(`SELECT * FROM messages WHERE sender = '${receiver}' AND receiver = '${sender}'`)
+        .then(([rows]) => {
+            received = rows;
+        });
 
-    const messages = [...sent, ...received];
+    let messages = [...sent, ...received];
+
+    messages = conversionMessages(messages);
     messages.sort(dynamicSort("date"));
 
     return messages;
@@ -53,16 +80,27 @@ MessagesDaoMySqlDB.prototype.readBySenderAndReceiver = async function (sender, r
 
 function dynamicSort(property) {
     let sortOrder = 1;
-    if(property[0] === "-") {
+    if (property[0] === "-") {
         sortOrder = -1;
         property = property.substr(1);
     }
 
-    return function (a,b) {
+    return function (a, b) {
         let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
 
         return result * sortOrder;
     }
+}
+
+function conversionMessages(obj) {
+    let messages = [];
+
+    for (let i = 0; i < obj.length; i++) {
+        const message = { _id: obj[i]._id, message: obj[i].message, sender: obj[i].sender, receiver: obj[i].receiver, date: obj[i].date };
+        messages.push(message);
+    }
+
+    return messages;
 }
 
 module.exports = MessagesDaoMySqlDB;

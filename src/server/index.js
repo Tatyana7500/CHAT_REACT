@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.static('dist'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const server = app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
 
@@ -76,15 +77,16 @@ app.post('/message', jsonParser, async (request, res) => {
     res.status(200).send('OK');
 });
 
-app.post('/auth', bodyParser.urlencoded({ extended: false }), async (request, res) => {
+app.post('/auth', urlencodedParser, async (request, res) => {
     try {
         const { emailInput, passwordInput } = request.body;
+
         const user = await chatDal.readUser(emailInput, passwordInput);
         res.status(200).send(user);
     } catch (e) {
         res.status(403).send(e.message);
     }
-})
+});
 
 app.post('/signin', jsonParser, async (request, res) => {
     try {
@@ -101,7 +103,6 @@ app.get('/users', async (request, res) => {
 });
 
 app.get('/messages', async (request, res) => {
-    
     const { sender, receiver, chat } = request.query;
     let users = await chatDal.readAllUsers();
     let messages = [];
