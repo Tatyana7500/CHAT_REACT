@@ -1,25 +1,88 @@
-import React, { Component } from 'react';
+import React from 'react';
+import constants from '../../server/Constants';
+import util from '../../server/Util.jsx';
 
-export default class SignIn extends Component {
+class SignIn extends React.Component {
+    constructor(props) {
+        super(props);
+        this.nameInputRef = React.createRef();
+        this.emailInputRef = React.createRef();
+        this.passwordInputRef = React.createRef();
+        this.state = {
+            name: '',
+            email: '',
+            password: '',
+        };
+    }
+
+    submitSignInForm = async () => {
+        await this.setState({
+            name: this.nameInputRef.current.value,
+            email: this.emailInputRef.current.value,
+            password: this.passwordInputRef.current.value,
+        });
+        const data = await util.sendPostRequest(`${constants.LOCALHOST}/signin`, this.state);
+        util.goToLogin();
+    }
+
     render() {
         return (
             <div className='login-wrapper signin'>
                 <div className='buttons'>
-                    <a href='http://localhost:3000/login' className='btn buttons__btn' id='singin_loginBtn'>login</a>
-                    <a href='http://localhost:3000/signIn' className='btn buttons__btn buttons__btn  buttons__btn_active' id='singin_singInBtn'>sing in</a>
+                    <a
+                        id='singin_loginBtn'
+                        href='/login'
+                        className='btn buttons__btn'>Log in
+                    </a>
+                    <a
+                        id='singin_singInBtn'
+                        href='/signIn'
+                        className='btn buttons__btn buttons__btn  buttons__btn_active'>Sign in
+                    </a>
                 </div>
                 <div className='login-form'>
-                    <label htmlFor='singinPageEmailInput' className='login-form__label' name='Email'>Your e-mail</label>
-                    <input type='text' className='login-form__input' maxLength='16' placeholder='E-mail' id='singinPageEmailInput' />
-                    <label htmlFor='singinPageNameInput' className='login-form__label' name='name'>Your name</label>
-                    <input type='text' className='login-form__input' maxLength='16' placeholder='Name' id='singinPageNameInput' />
-                    <label htmlFor='singinPagePasswordInput' className='login-form__label' name='password'>Your Password</label>
-                    <input type='password' className='login-form__input' maxLength='16' placeholder='Password' id='singinPagePasswordInput' />
-                    <label htmlFor='singinPageComfirmPasswordInput' className='login-form__label' name='password'>Comfirm your Password</label>
-                    <input type='password' className='login-form__input' maxLength='16' placeholder='ComfirmPassword' id='singinPageComfirmPasswordInput' />
-                    <input type='submit' value='sing in' className='btn login-form__btn' id='regAccount' />
+                    <input
+                        id='singinPageEmailInput'
+                        ref={this.emailInputRef}
+                        type='text'
+                        className='login-form__input'
+                        maxLength='25'
+                        placeholder='E-mail'
+                    />
+                    <input
+                        id='singinPageNameInput'
+                        ref={this.nameInputRef}
+                        type='text'
+                        className='login-form__input'
+                        maxLength='16'
+                        placeholder='Name'
+                    />
+                    <input
+                        id='singinPagePasswordInput'
+                        ref={this.passwordInputRef}
+                        type='password'
+                        className='login-form__input'
+                        maxLength='16'
+                        placeholder='Password'
+                    />
+                    <input
+                        id='singinPageComfirmPasswordInput'
+                        type='password'
+                        className='login-form__input'
+                        maxLength='16'
+                        placeholder='ComfirmPassword'
+                    />
+                    <input
+                        id='regAccount'
+                        onClick={this.submitSignInForm}
+                        type='submit'
+                        value='sing in'
+                        className='btn login-form__btn'
+                    />
                 </div>
             </div>
         );
     }
 }
+
+export default SignIn;

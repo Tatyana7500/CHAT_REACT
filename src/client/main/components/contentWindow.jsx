@@ -20,7 +20,7 @@ class ContentWindow extends Component {
                 </div>
                 
                 {this.props.users === constants.USERS && <UsersList usersList={this.props.List} />}
-                {this.props.users === constants.MESSAGE && <ChatWindow  messages = {this.props.messages}/>}
+                {this.props.users === constants.MESSAGE && <ChatWindow messageRef={this.props.messageRef} messages={this.props.messages} updateMessageValue={this.props.updateMessageValue} messageAreaValue={this.props.messageAreaValue} clickButtonSend={this.props.clickButtonSend}/>}
             </div>
         );
     }

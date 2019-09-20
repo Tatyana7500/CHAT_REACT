@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.static('dist'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const server = app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
 
@@ -22,16 +23,16 @@ chatDal.initialize();
 const clients = [];
 
 io.sockets.on('connection', socket => {
-    const user = JSON.parse(socket.handshake.query.user);
-    clients.push({
-        ...user,
-        socketId: socket.id,
-    });
+    //const user = JSON.parse(socket.handshake.query.user);
+    // clients.push({
+    //     ...user,
+    //     socketId: socket.id,
+    // });
 
-    io.sockets.emit(constants.ONLINE, clients.map(client => client.id));
+    //io.sockets.emit(constants.ONLINE, clients.map(client => client.id));
 
     socket.on(constants.MESSAGE, handleMessage);
-    socket.on(constants.DISCONNECT, () => handleDisconnect(socket));
+    //socket.on(constants.DISCONNECT, () => handleDisconnect(socket));
 });
 
 async function handleDisconnect(socket) {
@@ -73,18 +74,19 @@ app.post('/message', jsonParser, async (request, res) => {
     await chatDal.createMessage(request.body);
     io.sockets.emit(constants.MESSAGE, request.body);
 
-    res.status(200).send('OK');
+    res.status(200).send('ok');
 });
 
-app.post('/auth', bodyParser.urlencoded({ extended: false }), async (request, res) => {
+app.post('/auth', urlencodedParser, async (request, res) => {
     try {
         const { emailInput, passwordInput } = request.body;
+
         const user = await chatDal.readUser(emailInput, passwordInput);
         res.status(200).send(user);
     } catch (e) {
         res.status(403).send(e.message);
     }
-})
+});
 
 app.post('/signin', jsonParser, async (request, res) => {
     try {
@@ -101,7 +103,6 @@ app.get('/users', async (request, res) => {
 });
 
 app.get('/messages', async (request, res) => {
-    
     const { sender, receiver, chat } = request.query;
     let users = await chatDal.readAllUsers();
     let messages = [];

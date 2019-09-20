@@ -3,14 +3,17 @@ import MainHeader from './components/mainHeader';
 import ContentWindow from './components/contentWindow';
 import constants from '../../server/constants';
 import util from '../../server/util.jsx'
+import openSocket from 'socket.io-client';
+
 
 class Main extends Component {
     constructor(props) {
         super(props);
         this.getItemFromLocalStorage = this.getItemFromLocalStorage.bind(this);
-        this.clickButtonUser = this.clickButtonUser.bind(this)
-        this.clickButtonChat = this.clickButtonChat.bind(this)
-       //TODO: без bind
+       // this.clickButtonUser = this.clickButtonUser.bind(this)
+        //this.clickButtonChat = this.clickButtonChat.bind(this)
+        this.messageRef = React.createRef();
+        const socket = openSocket('http://localhost:8080');
         this.state = {
             name: '',
             email: '',
@@ -20,10 +23,17 @@ class Main extends Component {
             idUserSender: null,
             idUserReceiver: constants.ALL,
             chat: constants.PUBLIC,
+            messageAreaValue: '',
+            messageBody: {
+                name: '',
+                receiver: '',
+                message: '',
+                date: '',
+            }
         };
     }
 
-   async clickButtonUser () {
+    clickButtonUser = async () => {
         await this.setState({
             mainWindowState: constants.USERS,
         });
@@ -33,7 +43,7 @@ class Main extends Component {
         });
     }
 
-    async clickButtonChat() {
+    clickButtonChat = async () => {
         this.setState({
            mainWindowState: constants.MESSAGE,
         })
@@ -43,6 +53,28 @@ class Main extends Component {
             });
         
     }
+
+    updateMessageValue = (e) => {
+        this.setState({ messageAreaValue: e.target.value });
+        //this.socket.on(constants.MESSAGE , console.log("d"))
+    }
+
+    clickButtonSend = async () => {
+       const message= await this.setState({
+           messageBody: { 
+            sender: this.state.idUserSender,
+            receiver: constants.ALL,
+            message: this.state.messageAreaValue,
+            date: new Date().getTime(),
+           },
+        });
+         await util.sendPostRequest(`${constants.LOCALHOST}/message`, this.state.messageBody );
+        await console.log(this.state.messageBody)
+        await this.setState({
+            messageAreaValue: '',
+            messagesList: [...this.state.messagesList, this.state.messageBody]
+        });
+    };
 
     getItemFromLocalStorage() {
         const userObj = localStorage.getItem('chat');
@@ -55,6 +87,7 @@ class Main extends Component {
     
     componentDidMount() {
         this.getItemFromLocalStorage();
+
     }
 
     render() {
@@ -69,8 +102,12 @@ class Main extends Component {
                     List={this.state.usersList}
                     users={this.state.mainWindowState}
                     messages={this.state.messagesList}
+                    messageRef={this.messageRef}
                     clickChat={this.clickButtonChat}
                     clickUsers={this.clickButtonUser}
+                    clickButtonSend = {this.clickButtonSend}
+                    messageAreaValue={this.messageAreaValue}
+                    updateMessageValue = {this.updateMessageValue}
                 />
             </div>
         );

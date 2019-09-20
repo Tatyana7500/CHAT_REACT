@@ -313,3 +313,18 @@ body {
 .buttons__btn_active {
     background-color: orange;
 }
+
+.getEmojiButton {
+    cssFloat: right;
+    border: none;
+    margin: 0;
+    cursor: pointer;
+}
+
+.emojiPicker {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    cssFloat: right;
+    marginLeft: 200px;
+}
