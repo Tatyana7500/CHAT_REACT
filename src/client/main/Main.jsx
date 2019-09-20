@@ -78,6 +78,11 @@ class Main extends Component {
 
     getItemFromLocalStorage() {
         const userObj = localStorage.getItem('chat');
+
+        if(!userObj) {
+            return;
+        }
+
         this.setState({
             name: JSON.parse(userObj).name,
             email: JSON.parse(userObj).email,

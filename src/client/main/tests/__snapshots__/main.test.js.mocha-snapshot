@@ -1,0 +1,106 @@
+exports["Main snapshot/should render correctly(0)"] = {
+  "node": {
+    "nodeType": "host",
+    "type": "div",
+    "props": {
+      "className": "main",
+      "children": [
+        {
+          "type": "MainHeader",
+          "props": {
+            "name": "",
+            "email": ""
+          },
+          "_store": {}
+        },
+        {
+          "type": "ContentWindow",
+          "props": {
+            "List": [],
+            "users": "users",
+            "messages": [],
+            "messageRef": {},
+            "clickChat": "[function]",
+            "clickUsers": "[function]",
+            "clickButtonSend": "[function]",
+            "updateMessageValue": "[function]"
+          },
+          "_store": {}
+        }
+      ]
+    },
+    "rendered": [
+      {
+        "nodeType": "function",
+        "type": "MainHeader",
+        "props": {
+          "name": "",
+          "email": ""
+        }
+      },
+      {
+        "nodeType": "class",
+        "type": "ContentWindow",
+        "props": {
+          "List": [],
+          "users": "users",
+          "messages": [],
+          "messageRef": {},
+          "clickChat": "[function]",
+          "clickUsers": "[function]",
+          "clickButtonSend": "[function]",
+          "updateMessageValue": "[function]"
+        }
+      }
+    ]
+  },
+  "type": "div",
+  "props": {
+    "className": "main"
+  },
+  "children": [
+    {
+      "node": {
+        "nodeType": "function",
+        "type": "MainHeader",
+        "props": {
+          "name": "",
+          "email": ""
+        }
+      },
+      "type": "MainHeader",
+      "props": {
+        "name": "",
+        "email": ""
+      }
+    },
+    {
+      "node": {
+        "nodeType": "class",
+        "type": "ContentWindow",
+        "props": {
+          "List": [],
+          "users": "users",
+          "messages": [],
+          "messageRef": {},
+          "clickChat": "[function]",
+          "clickUsers": "[function]",
+          "clickButtonSend": "[function]",
+          "updateMessageValue": "[function]"
+        }
+      },
+      "type": "ContentWindow",
+      "props": {
+        "List": [],
+        "users": "users",
+        "messages": [],
+        "messageRef": {},
+        "clickChat": "[function]",
+        "clickUsers": "[function]",
+        "clickButtonSend": "[function]",
+        "updateMessageValue": "[function]"
+      }
+    }
+  ]
+};
+

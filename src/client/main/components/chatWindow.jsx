@@ -18,7 +18,6 @@ class ChatWindow extends Component {
         };
     }
 
-    
     showEmojis = (e) => {
         this.setState(
             {
